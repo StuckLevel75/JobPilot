@@ -4,10 +4,12 @@ import Link from "next/link";
 import {
   ArrowRight,
   Bell,
+  Building2,
   ClipboardList,
   CreditCard,
   Mail,
   MapPin,
+  Settings2,
   Sparkles,
   Users
 } from "lucide-react";
@@ -24,7 +26,7 @@ const quickActions = [
 ];
 
 export default function Home() {
-  const { activePlan, clients, invoices, jobs } = useWorkspace();
+  const { activePlan, businessProfile, clients, invoices, jobs } = useWorkspace();
   const unpaidTotal = invoices
     .filter((invoice) => invoice.status !== "Paid")
     .reduce((total, invoice) => total + Number(invoice.amount.replace(/[$,]/g, "")), 0);
@@ -41,7 +43,8 @@ export default function Home() {
 
   return (
     <AppShell
-      actionLabel="New job"
+      actionHref="/onboarding"
+      actionLabel="Finish setup"
       eyebrow="Service business command center"
       title="Job Pilot"
     >
@@ -143,6 +146,45 @@ export default function Home() {
         </div>
 
         <aside className="space-y-5">
+          <section className="rounded-lg border border-[#dfe5ee] bg-white p-5 shadow-sm">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-[#6b7686]">Business profile</p>
+                <h2 className="text-lg font-bold text-[#17202e]">
+                  {businessProfile.businessName}
+                </h2>
+              </div>
+              <Building2 className="text-[#c36f3d]" size={22} />
+            </div>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-start justify-between gap-4 border-b border-[#edf1f6] pb-3">
+                <span className="font-semibold text-[#6b7686]">Owner</span>
+                <span className="text-right font-bold text-[#253348]">
+                  {businessProfile.ownerName}
+                </span>
+              </div>
+              <div className="flex items-start justify-between gap-4 border-b border-[#edf1f6] pb-3">
+                <span className="font-semibold text-[#6b7686]">Area</span>
+                <span className="text-right font-bold text-[#253348]">
+                  {businessProfile.serviceArea}
+                </span>
+              </div>
+              <div className="flex items-start justify-between gap-4">
+                <span className="font-semibold text-[#6b7686]">Deposit</span>
+                <span className="text-right font-bold text-[#253348]">
+                  {businessProfile.depositRequired}
+                </span>
+              </div>
+            </div>
+            <Link
+              className="mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-[#d8e0ea] px-3 text-sm font-bold text-[#253348] transition hover:bg-[#f3f6fa]"
+              href="/settings"
+            >
+              <Settings2 size={16} />
+              Open settings
+            </Link>
+          </section>
+
           <section className="rounded-lg border border-[#dfe5ee] bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-bold">Quick Actions</h2>

@@ -43,6 +43,26 @@ export type Plan = {
   featured?: boolean;
 };
 
+export type BusinessProfile = {
+  businessName: string;
+  ownerName: string;
+  serviceArea: string;
+  phone: string;
+  email: string;
+  defaultService: string;
+  depositRequired: string;
+};
+
+export const businessProfile: BusinessProfile = {
+  businessName: "Job Pilot Demo Co.",
+  ownerName: "StuckLevel75",
+  serviceArea: "Chicago service area",
+  phone: "(312) 555-0100",
+  email: "hello@jobpilot.example",
+  defaultService: "Mobile service call",
+  depositRequired: "Yes"
+};
+
 export const clients: Client[] = [
   {
     id: "client-1",

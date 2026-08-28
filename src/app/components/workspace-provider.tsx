@@ -2,10 +2,12 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
+  type BusinessProfile,
   type Client,
   type Invoice,
   type Job,
   type PlanName,
+  businessProfile as starterBusinessProfile,
   clients as starterClients,
   invoices as starterInvoices,
   jobs as starterJobs,
@@ -16,12 +18,14 @@ type WorkspaceContextValue = {
   clients: Client[];
   jobs: Job[];
   invoices: Invoice[];
+  businessProfile: BusinessProfile;
   activePlan: PlanName;
   activePlanDetails: (typeof plans)[number];
   addClient: (client: Omit<Client, "id" | "value">) => boolean;
   addJob: (job: Omit<Job, "id">) => boolean;
   addInvoice: (invoice: Omit<Invoice, "number">) => void;
   markInvoicePaid: (number: string) => void;
+  saveBusinessProfile: (profile: BusinessProfile) => void;
   setActivePlan: (plan: PlanName) => void;
   resetDemo: () => void;
 };
@@ -33,6 +37,7 @@ type StoredWorkspace = {
   clients: Client[];
   jobs: Job[];
   invoices: Invoice[];
+  businessProfile: BusinessProfile;
   activePlan: PlanName;
 };
 
@@ -40,6 +45,7 @@ const starterWorkspace: StoredWorkspace = {
   clients: starterClients,
   jobs: starterJobs,
   invoices: starterInvoices,
+  businessProfile: starterBusinessProfile,
   activePlan: "Starter"
 };
 
@@ -54,7 +60,13 @@ function readInitialWorkspace() {
   }
 
   try {
-    return JSON.parse(raw) as StoredWorkspace;
+    const parsed = JSON.parse(raw) as Partial<StoredWorkspace>;
+
+    return {
+      ...starterWorkspace,
+      ...parsed,
+      businessProfile: parsed.businessProfile ?? starterBusinessProfile
+    };
   } catch {
     window.localStorage.removeItem(storageKey);
     return starterWorkspace;
@@ -136,6 +148,12 @@ export function WorkspaceProvider({ children }: Readonly<{ children: React.React
           invoices: current.invoices.map((invoice) =>
             invoice.number === number ? { ...invoice, status: "Paid" } : invoice
           )
+        }));
+      },
+      saveBusinessProfile(profile) {
+        setWorkspace((current) => ({
+          ...current,
+          businessProfile: profile
         }));
       },
       setActivePlan(plan) {

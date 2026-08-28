@@ -40,6 +40,17 @@ Job Pilot gives each business one place to:
 - Manage recurring work
 - See business activity at a glance
 
+## Current Live Demo
+
+- Dashboard with saved browser-local demo data
+- Clients, jobs, invoices, and packages pages
+- Demo package switching with usage limits
+- Sign-in screen prepared for real authentication
+- Onboarding and settings screens for business setup
+- GitHub Pages deployment workflow
+
+Real paid accounts still need backend services for authentication, database storage, Stripe billing, and email/SMS delivery.
+
 ## MVP Features
 
 ### Account And Business Setup

@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BadgeDollarSign,
   CalendarDays,
   CreditCard,
   LayoutDashboard,
+  LogIn,
   PackageCheck,
   Plus,
   Search,
@@ -19,7 +19,8 @@ const navigation = [
   { label: "Clients", href: "/clients", icon: Users },
   { label: "Jobs", href: "/jobs", icon: CalendarDays },
   { label: "Invoices", href: "/invoices", icon: CreditCard },
-  { label: "Packages", href: "/packages", icon: PackageCheck }
+  { label: "Packages", href: "/packages", icon: PackageCheck },
+  { label: "Settings", href: "/settings", icon: Settings }
 ];
 
 function isActive(pathname: string, href: string) {
@@ -30,14 +31,24 @@ export function AppShell({
   children,
   eyebrow,
   title,
+  actionHref,
   actionLabel = "New job"
 }: Readonly<{
   children: React.ReactNode;
   eyebrow: string;
   title: string;
+  actionHref?: string;
   actionLabel?: string;
 }>) {
   const pathname = usePathname();
+  const actionClasses =
+    "inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#1f6f5f] px-4 text-sm font-bold text-white transition hover:bg-[#19594d]";
+  const ActionIcon =
+    actionHref === "/signin"
+      ? LogIn
+      : actionHref === "/settings" || actionHref === "/onboarding"
+        ? Settings
+        : Plus;
 
   return (
     <main className="min-h-screen bg-[#f6f8fb] text-[#17202e]">
@@ -71,13 +82,14 @@ export function AppShell({
               );
             })}
           </nav>
-          <button
-            aria-label="Settings"
+          <Link
+            aria-label="Demo sign in"
             className="grid h-11 w-11 place-items-center rounded-lg text-[#546274] transition hover:bg-[#eef3f8] hover:text-[#163b5c]"
-            type="button"
+            href="/signin"
+            title="Demo sign in"
           >
-            <Settings size={20} />
-          </button>
+            <LogIn size={20} />
+          </Link>
         </div>
       </aside>
 
@@ -106,13 +118,17 @@ export function AppShell({
                   type="search"
                 />
               </label>
-              <button
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#1f6f5f] px-4 text-sm font-bold text-white transition hover:bg-[#19594d]"
-                type="button"
-              >
-                <Plus size={18} />
-                {actionLabel}
-              </button>
+              {actionHref ? (
+                <Link className={actionClasses} href={actionHref}>
+                  <ActionIcon size={18} />
+                  {actionLabel}
+                </Link>
+              ) : (
+                <button className={actionClasses} type="button">
+                  <ActionIcon size={18} />
+                  {actionLabel}
+                </button>
+              )}
             </div>
           </div>
           <nav

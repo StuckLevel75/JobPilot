@@ -12,7 +12,7 @@ export function StatCard({
   return (
     <article className="rounded-lg border border-[#dfe5ee] bg-white p-4 shadow-sm">
       <p className="text-sm font-semibold text-[#6b7686]">{label}</p>
-      <p className="mt-3 text-3xl font-bold text-[#17202e]">{value}</p>
+      <p className="mt-3 break-words text-2xl font-bold text-[#17202e] sm:text-3xl">{value}</p>
       <p className="mt-1 text-sm text-[#1f6f5f]">{note}</p>
     </article>
   );
@@ -75,12 +75,14 @@ export function PlanCard({
 }
 
 export function Field({
+  defaultValue,
   label,
   name,
   placeholder,
   required = true,
   type = "text"
 }: Readonly<{
+  defaultValue?: string;
   label: string;
   name: string;
   placeholder: string;
@@ -92,6 +94,7 @@ export function Field({
       {label}
       <input
         className="h-11 rounded-lg border border-[#d8e0ea] bg-white px-3 text-sm font-normal text-[#17202e] outline-none transition focus:border-[#1f6f5f] focus:ring-2 focus:ring-[#d6eee7]"
+        defaultValue={defaultValue}
         name={name}
         placeholder={placeholder}
         required={required}
@@ -102,10 +105,12 @@ export function Field({
 }
 
 export function SelectField({
+  defaultValue,
   label,
   name,
   options
 }: Readonly<{
+  defaultValue?: string;
   label: string;
   name: string;
   options: string[];
@@ -115,6 +120,7 @@ export function SelectField({
       {label}
       <select
         className="h-11 rounded-lg border border-[#d8e0ea] bg-white px-3 text-sm font-normal text-[#17202e] outline-none transition focus:border-[#1f6f5f] focus:ring-2 focus:ring-[#d6eee7]"
+        defaultValue={defaultValue}
         name={name}
       >
         {options.map((option) => (
