@@ -27,22 +27,28 @@ export function StatusBadge({ children }: Readonly<{ children: React.ReactNode }
 }
 
 export function PlanCard({
+  action,
   description,
   featured,
   features,
   name,
-  price
+  price,
+  selected
 }: Readonly<{
+  action?: React.ReactNode;
   description: string;
   featured?: boolean;
   features: string[];
   name: string;
   price: string;
+  selected?: boolean;
 }>) {
   return (
     <article
       className={`rounded-lg border p-5 shadow-sm ${
-        featured ? "border-[#1f6f5f] bg-[#f4faf8]" : "border-[#dfe5ee] bg-white"
+        featured || selected
+          ? "border-[#1f6f5f] bg-[#f4faf8]"
+          : "border-[#dfe5ee] bg-white"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
@@ -63,6 +69,73 @@ export function PlanCard({
           </li>
         ))}
       </ul>
+      {action ? <div className="mt-4">{action}</div> : null}
     </article>
+  );
+}
+
+export function Field({
+  label,
+  name,
+  placeholder,
+  required = true,
+  type = "text"
+}: Readonly<{
+  label: string;
+  name: string;
+  placeholder: string;
+  required?: boolean;
+  type?: string;
+}>) {
+  return (
+    <label className="grid gap-1.5 text-sm font-bold text-[#253348]">
+      {label}
+      <input
+        className="h-11 rounded-lg border border-[#d8e0ea] bg-white px-3 text-sm font-normal text-[#17202e] outline-none transition focus:border-[#1f6f5f] focus:ring-2 focus:ring-[#d6eee7]"
+        name={name}
+        placeholder={placeholder}
+        required={required}
+        type={type}
+      />
+    </label>
+  );
+}
+
+export function SelectField({
+  label,
+  name,
+  options
+}: Readonly<{
+  label: string;
+  name: string;
+  options: string[];
+}>) {
+  return (
+    <label className="grid gap-1.5 text-sm font-bold text-[#253348]">
+      {label}
+      <select
+        className="h-11 rounded-lg border border-[#d8e0ea] bg-white px-3 text-sm font-normal text-[#17202e] outline-none transition focus:border-[#1f6f5f] focus:ring-2 focus:ring-[#d6eee7]"
+        name={name}
+      >
+        {options.map((option) => (
+          <option key={option}>{option}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+export function FormPanel({
+  children,
+  title
+}: Readonly<{
+  children: React.ReactNode;
+  title: string;
+}>) {
+  return (
+    <section className="rounded-lg border border-[#dfe5ee] bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-bold text-[#17202e]">{title}</h2>
+      <div className="mt-4">{children}</div>
+    </section>
   );
 }

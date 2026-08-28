@@ -1,16 +1,47 @@
+"use client";
+
 import { LockKeyhole, PackageCheck } from "lucide-react";
 import { AppShell } from "../components/app-shell";
-import { PlanCard } from "../components/ui";
-import { packageFeatures, plans } from "../data";
+import { PlanCard, StatCard } from "../components/ui";
+import { packageFeatures, plans, type PlanName } from "../data";
+import { useWorkspace } from "../components/workspace-provider";
 
 export default function PackagesPage() {
+  const { activePlan, activePlanDetails, clients, jobs, resetDemo, setActivePlan } = useWorkspace();
+  const clientLimit = activePlanDetails.clientLimit;
+  const jobLimit = activePlanDetails.jobLimit;
+
   return (
     <AppShell actionLabel="Upgrade plan" eyebrow="Plans and feature gates" title="Packages">
       <div className="mx-auto max-w-7xl space-y-6 px-5 py-6">
         <section className="grid gap-4 lg:grid-cols-4">
           {plans.map((plan) => (
-            <PlanCard key={plan.name} {...plan} />
+            <PlanCard
+              action={
+                <button
+                  className={`h-10 w-full rounded-lg text-sm font-bold ${
+                    activePlan === plan.name
+                      ? "bg-[#163b5c] text-white"
+                      : "border border-[#d8e0ea] text-[#253348] hover:bg-[#f3f6fa]"
+                  }`}
+                  onClick={() => setActivePlan(plan.name as PlanName)}
+                  type="button"
+                >
+                  {activePlan === plan.name ? "Current plan" : "Switch demo plan"}
+                </button>
+              }
+              key={plan.name}
+              selected={activePlan === plan.name}
+              {...plan}
+            />
           ))}
+        </section>
+
+        <section className="grid gap-4 md:grid-cols-4">
+          <StatCard label="Current package" note="Demo selector" value={activePlan} />
+          <StatCard label="Client usage" note={`Limit: ${clientLimit}`} value={`${clients.length}`} />
+          <StatCard label="Job usage" note={`Limit: ${jobLimit}`} value={`${jobs.length}`} />
+          <StatCard label="Users included" note="Team seats" value={String(activePlanDetails.users)} />
         </section>
 
         <section className="rounded-lg border border-[#dfe5ee] bg-white shadow-sm">
@@ -50,7 +81,8 @@ export default function PackagesPage() {
         </section>
 
         <section className="rounded-lg border border-[#dfe5ee] bg-white p-5 shadow-sm">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
             <LockKeyhole className="text-[#c36f3d]" size={22} />
             <div>
               <h2 className="text-lg font-bold">Next Billing Step</h2>
@@ -58,6 +90,14 @@ export default function PackagesPage() {
                 These plan limits can connect to Stripe subscriptions and permission checks next.
               </p>
             </div>
+            </div>
+            <button
+              className="h-10 rounded-lg border border-[#d8e0ea] px-3 text-sm font-bold text-[#253348] hover:bg-[#f3f6fa]"
+              onClick={resetDemo}
+              type="button"
+            >
+              Reset demo data
+            </button>
           </div>
         </section>
       </div>

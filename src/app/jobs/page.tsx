@@ -1,18 +1,66 @@
+"use client";
+
+import type { FormEvent } from "react";
 import { CalendarPlus, MapPin } from "lucide-react";
 import { AppShell } from "../components/app-shell";
-import { StatCard, StatusBadge } from "../components/ui";
-import { jobs } from "../data";
+import { Field, FormPanel, SelectField, StatCard, StatusBadge } from "../components/ui";
+import { useWorkspace } from "../components/workspace-provider";
 
 export default function JobsPage() {
+  const { activePlanDetails, addJob, clients, jobs } = useWorkspace();
+  const jobLimit = activePlanDetails.jobLimit;
+  const atLimit = jobLimit !== "Unlimited" && jobs.length >= jobLimit;
+
+  function handleAddJob(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const ok = addJob({
+      client: String(form.get("client")),
+      crew: String(form.get("crew")),
+      service: String(form.get("service")),
+      status: String(form.get("status")),
+      time: String(form.get("time")),
+      value: String(form.get("value"))
+    });
+
+    if (ok) {
+      event.currentTarget.reset();
+    }
+  }
+
   return (
     <AppShell actionLabel="New job" eyebrow="Schedule and dispatch" title="Jobs">
       <div className="mx-auto max-w-7xl space-y-6 px-5 py-6">
         <section className="grid gap-4 md:grid-cols-4">
-          <StatCard label="Scheduled" note="Next 7 days" value="18" />
-          <StatCard label="In progress" note="2 crews active" value="4" />
-          <StatCard label="Quote sent" note="Needs follow-up" value="7" />
-          <StatCard label="Completed" note="This month" value="61" />
+          <StatCard label="Tracked jobs" note={`${activePlanDetails.name} package`} value={String(jobs.length)} />
+          <StatCard label="Job limit" note="Upgrade raises this" value={String(jobLimit)} />
+          <StatCard label="Scheduled" note="Ready to dispatch" value={String(jobs.filter((job) => job.status === "Scheduled").length)} />
+          <StatCard label="Quote sent" note="Needs follow-up" value={String(jobs.filter((job) => job.status === "Quote Sent").length)} />
         </section>
+
+        <FormPanel title="Schedule Job">
+          {atLimit ? (
+            <p className="rounded-lg bg-[#fff6e8] p-3 text-sm font-bold text-[#9a552b]">
+              This package has reached its job limit. Upgrade on Packages to unlock more.
+            </p>
+          ) : (
+            <form className="grid gap-4 lg:grid-cols-3" onSubmit={handleAddJob}>
+              <SelectField label="Client" name="client" options={clients.map((client) => client.name)} />
+              <Field label="Service" name="service" placeholder="Move-out clean" />
+              <Field label="Time" name="time" placeholder="Monday, 10:00 AM" />
+              <Field label="Crew" name="crew" placeholder="Avery + Kim" />
+              <Field label="Value" name="value" placeholder="$350" />
+              <SelectField label="Status" name="status" options={["Scheduled", "Quote Sent", "Deposit Paid", "Recurring"]} />
+              <button
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#1f6f5f] px-4 text-sm font-bold text-white lg:col-span-3 lg:w-fit"
+                type="submit"
+              >
+                <CalendarPlus size={16} />
+                Save job
+              </button>
+            </form>
+          )}
+        </FormPanel>
 
         <section className="rounded-lg border border-[#dfe5ee] bg-white shadow-sm">
           <div className="flex flex-col gap-3 border-b border-[#e5eaf1] p-4 sm:flex-row sm:items-center sm:justify-between">

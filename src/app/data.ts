@@ -1,5 +1,51 @@
-export const clients = [
+export type PlanName = "Free" | "Starter" | "Pro" | "Business";
+
+export type Client = {
+  id: string;
+  name: string;
+  owner: string;
+  phone: string;
+  email: string;
+  lastJob: string;
+  status: string;
+  value: string;
+};
+
+export type Job = {
+  id: string;
+  client: string;
+  service: string;
+  time: string;
+  status: string;
+  crew: string;
+  value: string;
+};
+
+export type Invoice = {
+  number: string;
+  client: string;
+  issued: string;
+  due: string;
+  status: string;
+  amount: string;
+};
+
+export type Plan = {
+  name: PlanName;
+  price: string;
+  description: string;
+  features: string[];
+  limits: string;
+  clientLimit: number | "Unlimited";
+  jobLimit: number | "Unlimited";
+  users: number;
+  sms: string;
+  featured?: boolean;
+};
+
+export const clients: Client[] = [
   {
+    id: "client-1",
     name: "Bright Auto Detail",
     owner: "Andre Lewis",
     phone: "(312) 555-0142",
@@ -9,6 +55,7 @@ export const clients = [
     value: "$4,820"
   },
   {
+    id: "client-2",
     name: "Northline Realty",
     owner: "Priya Shah",
     phone: "(312) 555-0167",
@@ -18,6 +65,7 @@ export const clients = [
     value: "$7,340"
   },
   {
+    id: "client-3",
     name: "Mason Reed",
     owner: "Mason Reed",
     phone: "(312) 555-0191",
@@ -27,6 +75,7 @@ export const clients = [
     value: "$980"
   },
   {
+    id: "client-4",
     name: "Hannah Pierce",
     owner: "Hannah Pierce",
     phone: "(312) 555-0188",
@@ -37,7 +86,7 @@ export const clients = [
   }
 ];
 
-export const jobs = [
+export const jobs: Job[] = [
   {
     id: "JP-1048",
     client: "Bright Auto Detail",
@@ -76,7 +125,7 @@ export const jobs = [
   }
 ];
 
-export const invoices = [
+export const invoices: Invoice[] = [
   {
     number: "INV-2031",
     client: "Northline Realty",
@@ -111,20 +160,28 @@ export const invoices = [
   }
 ];
 
-export const plans = [
+export const plans: Plan[] = [
   {
     name: "Free",
     price: "$0",
     description: "Validate the workflow.",
     features: ["5 clients", "5 jobs monthly", "Basic booking page"],
-    limits: "Starter workspace"
+    limits: "Starter workspace",
+    clientLimit: 5,
+    jobLimit: 5,
+    users: 1,
+    sms: "No"
   },
   {
     name: "Starter",
     price: "$19",
     description: "For solo operators.",
     features: ["50 clients", "Online payments", "Email reminders"],
-    limits: "1 user"
+    limits: "1 user",
+    clientLimit: 50,
+    jobLimit: 50,
+    users: 1,
+    sms: "Add-on"
   },
   {
     name: "Pro",
@@ -132,6 +189,10 @@ export const plans = [
     description: "For growing businesses.",
     features: ["Unlimited jobs", "Recurring work", "SMS credits"],
     limits: "3 users",
+    clientLimit: "Unlimited",
+    jobLimit: "Unlimited",
+    users: 3,
+    sms: "Included",
     featured: true
   },
   {
@@ -139,7 +200,11 @@ export const plans = [
     price: "$99",
     description: "For teams.",
     features: ["Team members", "Advanced reports", "Multiple calendars"],
-    limits: "10 users"
+    limits: "10 users",
+    clientLimit: "Unlimited",
+    jobLimit: "Unlimited",
+    users: 10,
+    sms: "Higher limits"
   }
 ];
 

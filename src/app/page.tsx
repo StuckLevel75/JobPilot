@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
@@ -11,14 +13,8 @@ import {
 } from "lucide-react";
 import { AppShell } from "./components/app-shell";
 import { PlanCard, StatCard, StatusBadge } from "./components/ui";
-import { jobs, plans } from "./data";
-
-const stats = [
-  { label: "Jobs this week", value: "18", note: "+4 from last week" },
-  { label: "Unpaid invoices", value: "$2,840", note: "6 waiting" },
-  { label: "Booked revenue", value: "$9,620", note: "August pipeline" },
-  { label: "Reminder success", value: "94%", note: "Email reminders" }
-];
+import { useWorkspace } from "./components/workspace-provider";
+import { plans } from "./data";
 
 const quickActions = [
   { label: "New job", icon: ClipboardList, href: "/jobs" },
@@ -28,6 +24,21 @@ const quickActions = [
 ];
 
 export default function Home() {
+  const { activePlan, clients, invoices, jobs } = useWorkspace();
+  const unpaidTotal = invoices
+    .filter((invoice) => invoice.status !== "Paid")
+    .reduce((total, invoice) => total + Number(invoice.amount.replace(/[$,]/g, "")), 0);
+  const bookedTotal = jobs.reduce(
+    (total, job) => total + Number(job.value.replace(/[$,]/g, "")),
+    0
+  );
+  const stats = [
+    { label: "Active clients", value: String(clients.length), note: `${activePlan} plan` },
+    { label: "Unpaid invoices", value: `$${unpaidTotal.toLocaleString()}`, note: "Needs follow-up" },
+    { label: "Booked revenue", value: `$${bookedTotal.toLocaleString()}`, note: "Open job board" },
+    { label: "Jobs tracked", value: String(jobs.length), note: "Saved in this browser" }
+  ];
+
   return (
     <AppShell
       actionLabel="New job"
@@ -153,7 +164,7 @@ export default function Home() {
 
           <section className="space-y-3">
             {plans.slice(1, 3).map((plan) => (
-              <PlanCard key={plan.name} {...plan} />
+              <PlanCard key={plan.name} selected={plan.name === activePlan} {...plan} />
             ))}
           </section>
         </aside>
