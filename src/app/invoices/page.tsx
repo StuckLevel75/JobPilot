@@ -29,7 +29,12 @@ export default function InvoicesPage() {
   }
 
   return (
-    <AppShell actionLabel="New invoice" eyebrow="Quotes, billing, and payments" title="Invoices">
+    <AppShell
+      actionHref="/billing"
+      actionLabel="Open billing"
+      eyebrow="Quotes, billing, and payments"
+      title="Invoices"
+    >
       <div className="mx-auto max-w-7xl space-y-6 px-5 py-6">
         <section className="grid gap-4 md:grid-cols-4">
           <StatCard label="Collected" note="Paid invoices" value={`$${collected.toLocaleString()}`} />

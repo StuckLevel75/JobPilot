@@ -3,11 +3,14 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   type BusinessProfile,
+  type BillingCadence,
+  type CheckoutIntent,
   type Client,
   type Invoice,
   type Job,
   type PlanName,
   businessProfile as starterBusinessProfile,
+  checkoutIntents as starterCheckoutIntents,
   clients as starterClients,
   invoices as starterInvoices,
   jobs as starterJobs,
@@ -19,6 +22,7 @@ type WorkspaceContextValue = {
   jobs: Job[];
   invoices: Invoice[];
   businessProfile: BusinessProfile;
+  checkoutIntents: CheckoutIntent[];
   activePlan: PlanName;
   activePlanDetails: (typeof plans)[number];
   addClient: (client: Omit<Client, "id" | "value">) => boolean;
@@ -26,6 +30,7 @@ type WorkspaceContextValue = {
   addInvoice: (invoice: Omit<Invoice, "number">) => void;
   markInvoicePaid: (number: string) => void;
   saveBusinessProfile: (profile: BusinessProfile) => void;
+  startCheckout: (plan: PlanName, cadence: BillingCadence) => void;
   setActivePlan: (plan: PlanName) => void;
   resetDemo: () => void;
 };
@@ -38,6 +43,7 @@ type StoredWorkspace = {
   jobs: Job[];
   invoices: Invoice[];
   businessProfile: BusinessProfile;
+  checkoutIntents: CheckoutIntent[];
   activePlan: PlanName;
 };
 
@@ -46,6 +52,7 @@ const starterWorkspace: StoredWorkspace = {
   jobs: starterJobs,
   invoices: starterInvoices,
   businessProfile: starterBusinessProfile,
+  checkoutIntents: starterCheckoutIntents,
   activePlan: "Starter"
 };
 
@@ -65,7 +72,8 @@ function readInitialWorkspace() {
     return {
       ...starterWorkspace,
       ...parsed,
-      businessProfile: parsed.businessProfile ?? starterBusinessProfile
+      businessProfile: parsed.businessProfile ?? starterBusinessProfile,
+      checkoutIntents: parsed.checkoutIntents ?? starterCheckoutIntents
     };
   } catch {
     window.localStorage.removeItem(storageKey);
@@ -79,6 +87,14 @@ function canAdd(currentCount: number, limit: number | "Unlimited") {
 
 function nextId(prefix: string, count: number) {
   return `${prefix}-${String(count + 1).padStart(4, "0")}`;
+}
+
+function displayDate() {
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  }).format(new Date());
 }
 
 export function WorkspaceProvider({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -154,6 +170,26 @@ export function WorkspaceProvider({ children }: Readonly<{ children: React.React
         setWorkspace((current) => ({
           ...current,
           businessProfile: profile
+        }));
+      },
+      startCheckout(plan, cadence) {
+        const planDetails = plans.find((item) => item.name === plan) ?? plans[0];
+        const amount = cadence === "Yearly" ? planDetails.yearlyPrice : planDetails.price;
+
+        setWorkspace((current) => ({
+          ...current,
+          activePlan: plan,
+          checkoutIntents: [
+            {
+              id: `CHK-${9004 + current.checkoutIntents.length}`,
+              plan,
+              cadence,
+              amount,
+              status: plan === "Free" ? "Free plan selected" : "Waiting for Stripe checkout",
+              createdAt: displayDate()
+            },
+            ...current.checkoutIntents
+          ]
         }));
       },
       setActivePlan(plan) {

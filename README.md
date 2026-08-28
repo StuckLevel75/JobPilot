@@ -45,6 +45,7 @@ Job Pilot gives each business one place to:
 - Dashboard with saved browser-local demo data
 - Clients, jobs, invoices, and packages pages
 - Demo package switching with usage limits
+- Billing page with monthly/yearly checkout events
 - Sign-in screen prepared for real authentication
 - Onboarding and settings screens for business setup
 - GitHub Pages deployment workflow

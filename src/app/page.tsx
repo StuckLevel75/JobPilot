@@ -11,7 +11,8 @@ import {
   MapPin,
   Settings2,
   Sparkles,
-  Users
+  Users,
+  WalletCards
 } from "lucide-react";
 import { AppShell } from "./components/app-shell";
 import { PlanCard, StatCard, StatusBadge } from "./components/ui";
@@ -22,7 +23,7 @@ const quickActions = [
   { label: "New job", icon: ClipboardList, href: "/jobs" },
   { label: "Add client", icon: Users, href: "/clients" },
   { label: "Send invoice", icon: CreditCard, href: "/invoices" },
-  { label: "View packages", icon: Sparkles, href: "/packages" }
+  { label: "Billing", icon: WalletCards, href: "/billing" }
 ];
 
 export default function Home() {

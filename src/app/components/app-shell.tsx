@@ -11,7 +11,8 @@ import {
   Plus,
   Search,
   Settings,
-  Users
+  Users,
+  WalletCards
 } from "lucide-react";
 
 const navigation = [
@@ -20,6 +21,7 @@ const navigation = [
   { label: "Jobs", href: "/jobs", icon: CalendarDays },
   { label: "Invoices", href: "/invoices", icon: CreditCard },
   { label: "Packages", href: "/packages", icon: PackageCheck },
+  { label: "Billing", href: "/billing", icon: WalletCards },
   { label: "Settings", href: "/settings", icon: Settings }
 ];
 
@@ -48,6 +50,8 @@ export function AppShell({
       ? LogIn
       : actionHref === "/settings" || actionHref === "/onboarding"
         ? Settings
+        : actionHref === "/billing"
+          ? WalletCards
         : Plus;
 
   return (

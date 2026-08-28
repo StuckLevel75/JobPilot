@@ -1,5 +1,7 @@
 export type PlanName = "Free" | "Starter" | "Pro" | "Business";
 
+export type BillingCadence = "Monthly" | "Yearly";
+
 export type Client = {
   id: string;
   name: string;
@@ -30,9 +32,19 @@ export type Invoice = {
   amount: string;
 };
 
+export type CheckoutIntent = {
+  id: string;
+  plan: PlanName;
+  cadence: BillingCadence;
+  amount: string;
+  status: string;
+  createdAt: string;
+};
+
 export type Plan = {
   name: PlanName;
   price: string;
+  yearlyPrice: string;
   description: string;
   features: string[];
   limits: string;
@@ -40,6 +52,7 @@ export type Plan = {
   jobLimit: number | "Unlimited";
   users: number;
   sms: string;
+  checkoutStatus: string;
   featured?: boolean;
 };
 
@@ -180,32 +193,48 @@ export const invoices: Invoice[] = [
   }
 ];
 
+export const checkoutIntents: CheckoutIntent[] = [
+  {
+    id: "CHK-9003",
+    plan: "Starter",
+    cadence: "Monthly",
+    amount: "$19",
+    status: "Demo subscription active",
+    createdAt: "Aug 28, 2026"
+  }
+];
+
 export const plans: Plan[] = [
   {
     name: "Free",
     price: "$0",
+    yearlyPrice: "$0",
     description: "Validate the workflow.",
     features: ["5 clients", "5 jobs monthly", "Basic booking page"],
     limits: "Starter workspace",
     clientLimit: 5,
     jobLimit: 5,
     users: 1,
-    sms: "No"
+    sms: "No",
+    checkoutStatus: "No payment required"
   },
   {
     name: "Starter",
     price: "$19",
+    yearlyPrice: "$190",
     description: "For solo operators.",
     features: ["50 clients", "Online payments", "Email reminders"],
     limits: "1 user",
     clientLimit: 50,
     jobLimit: 50,
     users: 1,
-    sms: "Add-on"
+    sms: "Add-on",
+    checkoutStatus: "Stripe payment link needed"
   },
   {
     name: "Pro",
     price: "$49",
+    yearlyPrice: "$490",
     description: "For growing businesses.",
     features: ["Unlimited jobs", "Recurring work", "SMS credits"],
     limits: "3 users",
@@ -213,18 +242,21 @@ export const plans: Plan[] = [
     jobLimit: "Unlimited",
     users: 3,
     sms: "Included",
+    checkoutStatus: "Stripe subscription needed",
     featured: true
   },
   {
     name: "Business",
     price: "$99",
+    yearlyPrice: "$990",
     description: "For teams.",
     features: ["Team members", "Advanced reports", "Multiple calendars"],
     limits: "10 users",
     clientLimit: "Unlimited",
     jobLimit: "Unlimited",
     users: 10,
-    sms: "Higher limits"
+    sms: "Higher limits",
+    checkoutStatus: "Stripe subscription needed"
   }
 ];
 
